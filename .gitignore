@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+dist/
+build/
+
+# Secrets / local config
+.env
+.env.*
+!.env.example
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code local settings (per-user, not shared)
+.claude/settings.local.json
+
+# Runtime workspace contents — keep the directory itself but never commit
+# user-supplied binaries, decompile cache, progress notes, etc.
+workspace/*
+!workspace/.gitkeep
+
+# Sample binaries (potentially malware) — do not commit
+samples/*
+!samples/.gitkeep

@@ -1,0 +1,45 @@
+services:
+  ilspy-mcp:
+    build: .
+    image: ilspy-mcp:local
+    container_name: ilspy-mcp
+    restart: unless-stopped
+    environment:
+      MCP_AUTH_TOKEN: ${MCP_AUTH_TOKEN:?set MCP_AUTH_TOKEN in .env}
+      ILSPY_WORKSPACE: /workspace
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8000
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      # mount your binary folder here (rw so the assembly cache can be written)
+      - ./workspace:/workspace
+
+  # OpenAPI front-end. Same image, different entrypoint: mcpo proxies the MCP
+  # server above and exposes each tool as a REST endpoint with Swagger docs at
+  # http://localhost:8001/docs. Useful for OpenWebUI, custom GPT actions, or
+  # any OpenAPI-aware client.
+  mcpo:
+    image: ilspy-mcp:local
+    container_name: ilspy-mcpo
+    restart: unless-stopped
+    depends_on:
+      - ilspy-mcp
+    # No filesystem access needed; bypass the workspace-detecting entrypoint.
+    user: "1000:1000"
+    entrypoint:
+      - mcpo
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8001"
+      - --api-key
+      - ${MCP_AUTH_TOKEN:?set MCP_AUTH_TOKEN in .env}
+      - --server-type
+      - streamable-http
+      - --header
+      - '{"Authorization":"Bearer ${MCP_AUTH_TOKEN}"}'
+      - --
+      - http://ilspy-mcp:8000/mcp
+    ports:
+      - "127.0.0.1:8001:8001"
