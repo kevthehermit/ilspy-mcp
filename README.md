@@ -35,6 +35,16 @@ mkdir -p workspace && cp /path/to/your.dll workspace/
 docker compose up --build -d
 ```
 
+Or skip the build and pull a pre-built image from GHCR (published by the `Build and publish image` GitHub Action):
+
+| Tag | Source |
+|---|---|
+| `ghcr.io/<owner>/ilspy-mcp:main` | tip of the `main` branch (rolling) |
+| `ghcr.io/<owner>/ilspy-mcp:latest` | most recent `vX.Y.Z` tag |
+| `ghcr.io/<owner>/ilspy-mcp:1.2.3` | a specific release |
+
+In `docker-compose.yml`, replace `build: .` with `image: ghcr.io/<owner>/ilspy-mcp:latest` to use a published image instead of building locally.
+
 Then connect any MCP HTTP client:
 
 ```bash
